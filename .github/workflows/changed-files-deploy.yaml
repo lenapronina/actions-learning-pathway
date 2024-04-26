@@ -1,0 +1,49 @@
+name: changed-files
+
+on:
+  pull_request:
+    branches: ['main']
+    paths: [styles/**, pages/**, .github/workflows/changed-files-deploy.yaml, ]
+
+  workflow_dispatch:
+
+env: 
+  STYLE: standard
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Changed Files
+        uses: tj-actions/changed-files@v41
+        id: changed-files
+        with:
+          files_ignore: |
+            .github/**
+            **.md
+          json: true
+          escape_json: false
+          dir_names: true
+          dir_names_exclude_current_dir: true
+  test:
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        modules: ${{ fromJSON(needs.detect-changes.outputs.matrix) }}
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: use node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - run: npm install
+      - name: write paths
+        working-directory: ${{ matrix.modules }}
+        run: echo "::set-env name=CHANGED_FOLDERS::${{ matrix.modules }}"
