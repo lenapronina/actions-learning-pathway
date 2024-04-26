@@ -6,6 +6,7 @@ permissions:
 on:
   workflow_dispatch:
   pull_request:
+    paths: [standard/**, satellite/**, scripts/**, .github/workflows/main-staging.yaml]
 
 env: 
   ENV_NAME: test_env_name
@@ -24,6 +25,7 @@ jobs:
         uses: tj-actions/changed-files@v44
         with:
           matrix: true
+          dir_names: true
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
 
@@ -42,9 +44,3 @@ jobs:
       - name: Test
         run: |
           echo ${{ matrix.files }}
-      - name: Add preview link
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: ${{ matrix.files }}
-          comment_tag: preview-${{ env.ENV_NAME }}
-          mode: recreate
