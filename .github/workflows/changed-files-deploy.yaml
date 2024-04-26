@@ -9,7 +9,7 @@ on:
     paths: [standard/**, satellite/**, scripts/**, .github/workflows/main-staging.yaml]
 
 env: 
-  ENV_NAME: test_env_name
+  STYLES: '["standard", "satellite"]'
 
 jobs:
   changed-files:
@@ -30,7 +30,9 @@ jobs:
         run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
 
   matrix-job:
+  
     name: Run Matrix Job
+    if: ${{ !contains(fromJSON(needs.changed-files.outputs.matrix), 'scripts') }}
     runs-on: ubuntu-latest
     needs: [changed-files]
     strategy:
@@ -42,5 +44,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Test
+       
         run: |
           echo ${{ matrix.files }}
