@@ -28,7 +28,7 @@ jobs:
         run: tests
   
   deploy: Run deploy job
-    name: Deploy to 
+    name: Deploy to matrix
     needs: test
     runs-on: ubuntu-latest
     permissions:
@@ -49,7 +49,5 @@ jobs:
           dir_names_exclude_current_dir: true
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
-
-      - name: Deploy 
-        run: |
-          echo ${{contains(env.STYLES, steps.changed-files.outputs.all_changed_files)}}
+      - name: List all changed files
+        run: echo ${{contains(env.STYLES, steps.changed-files.outputs.all_changed_files)}}
