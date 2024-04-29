@@ -9,7 +9,7 @@ on:
     paths: [standard/**, satellite/**, scripts/**, .github/workflows/main-staging.yaml]
 
 env: 
-  STYLES: '["standard", "satellite"]'
+  STYLES:  ["standard", "satellite"]
 
 jobs:
   changed-files:
@@ -43,11 +43,10 @@ jobs:
   matrix-job:
     name: Run Matrix Job
     runs-on: ubuntu-latest
-    needs: [changed-files]
-    if: ${{ steps.check-styles.outputs.all_found == 'true' }}
+    needs: [check-styles]
     strategy:
       matrix: 
-        files: ${{ fromJSON(needs.changed-files.outputs.all_changed_files) }}
+        files: ${{ fromJSON(needs.check-styles.outputs.matrix) }}
       max-parallel: 4
       fail-fast: false
     steps:
