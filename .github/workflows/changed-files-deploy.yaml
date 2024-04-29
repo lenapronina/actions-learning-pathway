@@ -9,7 +9,7 @@ on:
     paths: [standard/**, satellite/**, scripts/**, .github/workflows/main-staging.yaml]
 
 env: 
-  STYLES:  ["standard", "satellite"]
+  STYLES:  '["standard", "satellite"]'
 
 jobs:
   changed-files:
