@@ -28,7 +28,7 @@ jobs:
         run: tests
   
   deploy: Run deploy job
-    name: Deploy to ${{ matrix.environment }}
+    name: Deploy to 
     needs: test
     runs-on: ubuntu-latest
     permissions:
