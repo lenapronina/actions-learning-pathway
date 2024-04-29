@@ -38,7 +38,7 @@ jobs:
           dir_names: true
           dir_names_exclude_current_dir: true
       - name: List all changed files
-        run: echo ${{contains(env.STYLES, steps.changed-files.outputs.all_changed_files)}}
+        run: echo ${{contains(toJSON(env.STYLES), 'standard')}}
   deploy:
     name: Run deploy job
     runs-on: ubuntu-latest
