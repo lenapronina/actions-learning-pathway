@@ -49,4 +49,4 @@ jobs:
           echo ${{ matrix.files }}
       - name: Test condition
         run: |
-          echo ${{ needs.changed-files.outputs.all_changed_files}}
+          echo ${{ needs.changed-files.outputs }}
