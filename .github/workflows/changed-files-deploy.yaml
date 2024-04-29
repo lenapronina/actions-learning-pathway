@@ -4,9 +4,9 @@ permissions:
    contents: read
 
 on:
-  workflow_dispatch:
   pull_request:
     paths: [standard/**, satellite/**, scripts/**, .github/workflows/main-staging.yaml]
+  workflow_dispatch:
 
 env: 
   STYLES: '["standard", "satellite"]'
@@ -34,7 +34,6 @@ jobs:
     name: Run deploy job
     runs-on: ubuntu-latest
     needs: [changed-files]
-    if: needs.changed-files.outputs.matrix.any_changed == 'true'
     strategy:
       matrix: 
         files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
