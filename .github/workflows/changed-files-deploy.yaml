@@ -37,6 +37,10 @@ jobs:
     strategy:
       matrix: 
         files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
+      isForDeploy:
+        - ${{ !contains(matrix.files, 'master') }}
+      exclude:
+        - isForDeploy: true
       max-parallel: 4
       fail-fast: false
     steps:
