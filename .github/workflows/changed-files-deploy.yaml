@@ -40,7 +40,7 @@ jobs:
       isForDeploy:
         - ${{ !contains(matrix.files, 'master') }}
       exclude:
-        - isForDeploy: true
+        - files: isForDeploy
       max-parallel: 4
       fail-fast: false
     steps:
