@@ -5,16 +5,36 @@ permissions:
 
 on:
   pull_request:
-    paths: [standard/**, satellite/**, scripts/**, .github/workflows/main-staging.yaml]
+    paths: [map-styles/**, scripts/**, .github/workflows/main-staging.yaml]
   workflow_dispatch:
 
 env: 
   STYLES: '["standard", "satellite"]'
 
 jobs:
-  changed-files:
-    name: Get changed files
+  test:
+    name: Run tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment: staging
+    env:
+      ENV_NAME: staging
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run tests
+        run: tests
+  
+  deploy: Run deploy job
+    name: Deploy to ${{ matrix.environment }}
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
     outputs:
       matrix: ${{ steps.changed-files.outputs.all_changed_files }}
     steps:
@@ -30,23 +50,6 @@ jobs:
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
 
-  deploy:
-    name: Run deploy job
-    runs-on: ubuntu-latest
-    needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.all_changed_files != 'scripts'}}
-    strategy:
-      matrix: 
-        files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
-        
-      max-parallel: 4
-      fail-fast: false
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Test
+      - name: Deploy 
         run: |
-          echo ${{ matrix.files }}
-      - name: Test condition
-        run: |
-          echo ${{ needs.changed-files}}
+          echo ${{contains(env.STYLES, steps.changed-files.outputs.all_changed_files)}}
