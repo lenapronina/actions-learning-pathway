@@ -9,7 +9,7 @@ on:
     paths: [standard/**, satellite/**, scripts/**, .github/workflows/main-staging.yaml]
 
 env: 
-  STYLES:  '["standard", "satellite"]'
+  STYLES: '["standard", "satellite"]'
 
 jobs:
   changed-files:
@@ -26,27 +26,18 @@ jobs:
         with:
           matrix: true
           dir_names: true
-      - name: Check if all values in STYLES are present
-        id: check-styles
-        run: |
-          all_found=true
-          for style in ${STYLES[@]}; do
-            if [[ ! " ${changed-files[@]} " =~ " $style " ]]; then
-              all_found=false
-              break
-            fi
-          done
-          echo "::set-output name=all_found::$all_found"
-      - name: List changed files
+          dir_names_exclude_current_dir: true
+      - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
 
-  matrix-job:
-    name: Run Matrix Job
+  deploy:
+    name: Run deploy job
     runs-on: ubuntu-latest
-    needs: [check-styles]
+    needs: [changed-files]
+    if: needs.changed-files.outputs.any_changed == 'true'
     strategy:
       matrix: 
-        files: ${{ fromJSON(needs.check-styles.outputs.matrix) }}
+        files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
       max-parallel: 4
       fail-fast: false
     steps:
