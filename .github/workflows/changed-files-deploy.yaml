@@ -15,20 +15,12 @@ jobs:
   test:
     name: Run tests
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    environment: staging
-    env:
-      ENV_NAME: staging
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Run tests
-        run: echo 'test'
-  
-
+        run: |
+          echo "test"
   changed-files:
   needs: test
     name: Get changed files
