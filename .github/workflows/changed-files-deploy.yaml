@@ -51,7 +51,7 @@ jobs:
         
       max-parallel: 4
       fail-fast: false
-    if: ${{ contains(toJSON(needs.changed-files.outputs.STYLES), matrix.files) }}
+    if: ${{ contains(toJSON(needs.changed-files.outputs.STYLES), fromJSON(needs.changed-files.outputs.matrix).files) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
