@@ -43,7 +43,8 @@ jobs:
     name: Run deploy job
     runs-on: ubuntu-latest
     needs: [changed-files]
-   
+    env: 
+      STYLES: '["standard", "satellite"]'
     if: ${{contains(toJSON(env.STYLES), needs.changed-files.outputs.all_changed_files)}}
     strategy:
       matrix: 
