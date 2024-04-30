@@ -44,8 +44,9 @@ jobs:
       - name: Check if files are in STYLES
         id: check-styles
         run: |
-          STYLES=$(echo '${{ toJson(env.STYLES) }}' | jq -r '.[]')
-          IFS=$'\n' read -rd '' -a STYLES_ARRAY <<< "$STYLES"
+          STYLES=$(echo ${{ env.STYLES }})
+          STYLES=${STYLES//[\[\]\",]/}
+          IFS=', ' read -r -a STYLES_ARRAY <<< "$STYLES"
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             matched=false
             for style in "${STYLES_ARRAY[@]}"; do
