@@ -45,9 +45,10 @@ jobs:
         id: check-styles
         run: |
           STYLES=$(echo '${{ toJson(env.STYLES) }}' | jq -r '.[]')
+          IFS=$'\n' read -rd '' -a STYLES_ARRAY <<< "$STYLES"
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             matched=false
-            for style in $STYLES; do
+            for style in "${STYLES_ARRAY[@]}"; do
               if [[ "$file" == "$style" ]]; then
                 matched=true
                 break
