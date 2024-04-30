@@ -58,6 +58,6 @@ jobs:
         run: |
           echo ${{ matrix.files }}
       - name: Test condition
-        if: ${{ contains( toJSON(env.STYLES), needs.changed-files.outputs.all_changed_files)}}
+        if: ${{ contains( toJSON(env.STYLES), matrix.files)}}
         run: |
           echo ${{ needs.changed-files}}
