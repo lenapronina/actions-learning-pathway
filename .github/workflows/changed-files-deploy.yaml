@@ -45,7 +45,6 @@ jobs:
     needs: [changed-files]
     env: 
       STYLES: '["standard", "satellite"]'
-    if: ${{contains(toJSON(env.STYLES), needs.changed-files.outputs.all_changed_files)}}
     strategy:
       matrix: 
         files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
@@ -59,5 +58,6 @@ jobs:
         run: |
           echo ${{ matrix.files }}
       - name: Test condition
+        if: ${{ contains( toJSON(env.STYLES), needs.changed-files.outputs.all_changed_files)}}
         run: |
           echo ${{ needs.changed-files}}
