@@ -44,16 +44,16 @@ jobs:
       - name: Check if files are in STYLES
         id: check-styles
         run: |
-          STYLES=(${{ toJson(env.STYLES) }})
+          STYLES=$(echo '${{ toJson(env.STYLES) }}' | jq -r '.[]')
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             matched=false
-            for style in "${STYLES[@]}"; do
+            for style in $STYLES; do
               if [[ "$file" == "$style" ]]; then
                 matched=true
                 break
               fi
             done
-            echo "::set-output name=${file}_matched::${matched}"
+            echo "::set-output name=${file}_matched::$matched"
           done
       - name: List filtered values
         run: echo '${{ steps.check-styles.outputs.styles_matched }}'
