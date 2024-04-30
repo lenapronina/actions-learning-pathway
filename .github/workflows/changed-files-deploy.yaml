@@ -27,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.changed-files.outputs.all_changed_files }}
+      styles_matched: ${{ steps.check-styles.outputs.styles_matched }}
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -39,19 +41,30 @@ jobs:
           dir_names_exclude_current_dir: true
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
+      - name: Check if files are in STYLES
+        id: check-styles
+        run: |
+          STYLES=(${{ toJson(env.STYLES) }})
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            matched=false
+            for style in "${STYLES[@]}"; do
+              if [[ "$file" == "$style" ]]; then
+                matched=true
+                break
+              fi
+            done
+            echo "::set-output name=${file}_matched::${matched}"
+          done
   deploy:
     name: Run deploy job
     runs-on: ubuntu-latest
-    needs: [changed-files]
-    env: 
-      STYLES: '["standard", "satellite"]'
+    needs: [styles_matched]
     strategy:
       matrix: 
         files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
         
       max-parallel: 4
       fail-fast: false
-    if: ${{ contains(toJSON(needs.changed-files.outputs.STYLES), fromJSON(needs.changed-files.outputs.matrix).files) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
