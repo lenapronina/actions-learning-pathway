@@ -41,8 +41,8 @@ jobs:
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
       - name: List all filtered files
-        if: ${{ contains(env.STYLES, steps.filter-files.outputs.filtered_files) }}
-        run: echo '${{ steps.filter-files.outputs.filtered_files }}'
+        if: ${{ contains(env.STYLES, steps.filter-files.outputs.all_changed_files) }}
+        run: echo '${{ steps.filter-files.outputs.all_changed_files }}'
         
   deploy:
     name: Run deploy job
