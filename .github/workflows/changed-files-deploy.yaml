@@ -47,7 +47,7 @@ jobs:
     
     runs-on: ubuntu-latest
     needs: [changed-files]
-    if: ${{ contains( needs.changed-files.outputs.styles, fromJSON(needs.changed-files.outputs.matrix))}}
+    
     strategy:
       matrix: 
         files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
@@ -56,6 +56,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Echoo
+        run: |
+          echo '${{ contains( needs.changed-files.outputs.styles, fromJSON(needs.changed-files.outputs.matrix))}}' 
+          echo '${{ needs.changed-files.outputs.styles }}' 
+          echo '${{ fromJSON(needs.changed-files.outputs.matrix) }}' 
       - name: Test condition
         run: |
           echo ${{ needs.changed-files.outputs.matrix}}
