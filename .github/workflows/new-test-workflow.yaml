@@ -24,7 +24,7 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
-          dir_names_exclude_current_dir: true
+          matrix: true
           dir_names: true
      - name: Debug changed files output
         run: |
