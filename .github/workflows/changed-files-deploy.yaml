@@ -43,7 +43,7 @@ jobs:
       - name: Filter files
         id: filter-files
         run: |
-          filtered_files=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | grep -E "/(standard|satellite)$")
+          filtered_files=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr ' ' '\n' | grep -E "/(standard|satellite)$")
           echo "::set-output name=filtered_files::$filtered_files"
       - name: List all filtered files
         run: echo '${{ steps.filter-files.outputs.filtered_files }}'
