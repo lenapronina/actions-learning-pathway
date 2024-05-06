@@ -58,9 +58,9 @@ jobs:
         uses: actions/checkout@v3
       - name: Echoo
         run: |
-          echo '${{ contains( needs.changed-files.outputs.styles, fromJSON(needs.changed-files.outputs.matrix))}}' 
+          echo '${{ contains( needs.changed-files.outputs.styles, fromJSON(needs.changed-files.outputs.matrix.files))}}' 
           echo '${{ needs.changed-files.outputs.styles }}' 
-          echo '${{ fromJSON(needs.changed-files.outputs.matrix) }}' 
+          echo '${{ fromJSON(needs.changed-files.outputs.matrix.files) }}' 
       - name: Test condition
         run: |
           echo ${{ needs.changed-files.outputs.matrix}}
