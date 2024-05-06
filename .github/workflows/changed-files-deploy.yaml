@@ -45,11 +45,11 @@ jobs:
     name: Run deploy job
     runs-on: ubuntu-latest
     needs: [changed-files]
-    # strategy:
-    #   matrix: 
-    #     files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
-    #   max-parallel: 4
-    #   fail-fast: false
+    strategy:
+      matrix: 
+        files: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
+      max-parallel: 4
+      fail-fast: false
     steps:
       - name: Checkout
         uses: actions/checkout@v3
