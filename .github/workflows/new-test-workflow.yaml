@@ -24,12 +24,12 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
-          matrix: true
+          dir_names_exclude_current_dir: true
           dir_names: true
-      - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
-      - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs.all_changed_folders }}'
+     - name: Debug changed files output
+        run: |
+          echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+          echo "Changed folders: ${{ steps.changed-files.outputs.all_changed_folders }}"
       
       - name: Check for style changes
         run: |
