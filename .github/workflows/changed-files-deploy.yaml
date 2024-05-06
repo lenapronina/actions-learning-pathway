@@ -52,9 +52,9 @@ jobs:
               matched_files+=("$file")
             fi
           done
-          echo "::set-output name=styles_matched::${matched_files[*]}"
+          echo "STYLES_MATCHED=${matched_files[*]}" >> $GITHUB_ENV
       - name: List filtered values
-        run: echo '${{ steps.check-styles.outputs.styles_matched }}'
+        run: echo $STYLES_MATCHED
         
   deploy:
     name: Run deploy job
