@@ -15,7 +15,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.changed-files.outputs.all_changed_folders }}
+      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -26,7 +26,9 @@ jobs:
         with:
           matrix: true
           dir_names: true
-     - name: Debug changed files output
+          dir_names_exclude_current_dir: true
+      
+      - name: Debug changed files output
         run: |
           echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
           echo "Changed folders: ${{ steps.changed-files.outputs.all_changed_folders }}"
@@ -36,6 +38,7 @@ jobs:
           echo "Changed folders: ${{ steps.changed-files.outputs.all_changed_folders }}"
           STYLES=${{ toJson(env.STYLES) }}
           changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_folders }}" | tr '\n' ' ')
+          echo "Changed folders after processing: $changed_folders"
           for folder in $changed_folders; do
             echo "Checking folder: $folder"
             if [[ "$folder" == *"${STYLES}"* ]]; then
@@ -50,6 +53,7 @@ jobs:
           echo "Changed folders: ${{ steps.changed-files.outputs.all_changed_folders }}"
           STYLES=${{ toJson(env.STYLES) }}
           changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_folders }}" | tr '\n' ' ')
+          echo "Changed folders after processing: $changed_folders"
           for folder in $changed_folders; do
             echo "Checking folder: $folder"
             if [[ "$folder" == *"/scripts"* ]]; then
@@ -62,3 +66,4 @@ jobs:
             fi
           done
           echo "No changes detected in relevant folders."
+      
