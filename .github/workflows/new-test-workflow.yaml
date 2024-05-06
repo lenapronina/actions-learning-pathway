@@ -29,11 +29,10 @@ jobs:
           dir_names_exclude_current_dir: true
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
-      - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs.all_changed_folders }}'
-
+      
       - name: Check for style changes
         run: |
+          STYLES=${{ toJson(env.STYLES) }}
           changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr '\n' ' ')
           for folder in $changed_folders; do
             if [[ "$folder" == *"${STYLES}"* ]]; then
@@ -45,7 +44,8 @@ jobs:
 
       - name: Check for script changes
         run: |
-          changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr '\n' ' ')
+          STYLES=${{ toJson(env.STYLES) }}
+          changed_folders=$(echo "${{ ${{ steps.changed-files.outputs.all_changed_files }} }}" | tr '\n' ' ')
           for folder in $changed_folders; do
             if [[ "$folder" == *"/scripts"* ]]; then
               for style in ${STYLES[@]}; do
