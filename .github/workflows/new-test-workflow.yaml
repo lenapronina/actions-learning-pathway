@@ -26,15 +26,18 @@ jobs:
         with:
           matrix: true
           dir_names: true
-          dir_names_exclude_current_dir: true
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
+      - name: List all changed files
+        run: echo '${{ steps.changed-files.outputs.all_changed_folders }}'
       
       - name: Check for style changes
         run: |
+          echo "Changed folders: ${{ steps.changed-files.outputs.all_changed_folders }}"
           STYLES=${{ toJson(env.STYLES) }}
-          changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr '\n' ' ')
+          changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_folders }}" | tr '\n' ' ')
           for folder in $changed_folders; do
+            echo "Checking folder: $folder"
             if [[ "$folder" == *"${STYLES}"* ]]; then
               echo "Changes detected in folder $folder, deploying..."
               exit 0
@@ -44,9 +47,11 @@ jobs:
 
       - name: Check for script changes
         run: |
+          echo "Changed folders: ${{ steps.changed-files.outputs.all_changed_folders }}"
           STYLES=${{ toJson(env.STYLES) }}
-          changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr '\n' ' ')
+          changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_folders }}" | tr '\n' ' ')
           for folder in $changed_folders; do
+            echo "Checking folder: $folder"
             if [[ "$folder" == *"/scripts"* ]]; then
               for style in ${STYLES[@]}; do
                 if [[ "$folder" == *"$style"* ]]; then
