@@ -55,6 +55,10 @@ jobs:
           echo "STYLES_MATCHED=${matched_files[*]}" >> $GITHUB_ENV
       - name: List filtered values
         run: echo $STYLES_MATCHED
+      - name: Debug styles matched
+        run: echo "$STYLES_MATCHED"
+        env:
+          STYLES_MATCHED: ${{ toJson(needs.changed-files.outputs.styles_matched) }}
         
   deploy:
     name: Run deploy job
