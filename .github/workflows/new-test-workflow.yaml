@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  STYLES: '["standard", "satellite", "mono"]'
+  STYLES: '[standard, satellite, mono]'
 
 jobs:
   deploy:
