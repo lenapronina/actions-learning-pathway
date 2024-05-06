@@ -34,7 +34,7 @@ jobs:
 
       - name: Check for style changes
         run: |
-          changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_folders }}" | tr '\n' ' ')
+          changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr '\n' ' ')
           for folder in $changed_folders; do
             if [[ "$folder" == *"${STYLES}"* ]]; then
               echo "Changes detected in folder $folder, deploying..."
@@ -45,7 +45,7 @@ jobs:
 
       - name: Check for script changes
         run: |
-          changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_folders }}" | tr '\n' ' ')
+          changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr '\n' ' ')
           for folder in $changed_folders; do
             if [[ "$folder" == *"/scripts"* ]]; then
               for style in ${STYLES[@]}; do
