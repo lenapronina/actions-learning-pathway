@@ -58,7 +58,7 @@ jobs:
           done
           echo "::set-output name=styles_matched::$(echo ${matched_files[@]})"
       - name: List filtered values
-        run: echo '${{ steps.check-styles.outputs.styles_matched }}'
+        run: echo '${{ steps.check-styles.outputs.matrix }}'
   deploy:
     name: Run deploy job
     runs-on: ubuntu-latest
