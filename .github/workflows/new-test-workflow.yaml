@@ -8,35 +8,42 @@ on:
     paths: [map-styles/**, scripts/**, .github/workflows/new-test-workflow.yaml]
   workflow_dispatch:
 
-env: 
+env:
   STYLES: '["standard", "satellite", "mono"]'
 
 jobs:
-  test:
-    name: Run tests
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Run tests
-        run: |
-          echo "test"
-  changed-files:
-    needs: test
-    name: Get changed files
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Get changed files
-        id: changed-files
+        id: changed_files
         uses: tj-actions/changed-files@v44
-        with:
-          matrix: true
-          dir_names: true
-          dir_names_exclude_current_dir: true
-      - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
-        
+
+      - name: Check for style changes
+        run: |
+          changed_folders=$(echo "${{ steps.changed_files.outputs.all_changed_folders }}" | tr '\n' ' ')
+          for folder in $changed_folders; do
+            if [[ "$folder" == *"${STYLES}"* ]]; then
+              echo "Changes detected in folder $folder, deploying..."
+              exit 0
+            fi
+          done
+          echo "No changes detected in relevant folders."
+
+      - name: Check for script changes
+        run: |
+          changed_folders=$(echo "${{ steps.changed_files.outputs.all_changed_folders }}" | tr '\n' ' ')
+          for folder in $changed_folders; do
+            if [[ "$folder" == *"/scripts"* ]]; then
+              for style in ${STYLES[@]}; do
+                if [[ "$folder" == *"$style"* ]]; then
+                  echo "Changes detected in folder $folder, deploying..."
+                  exit 0
+                fi
+              done
+            fi
+          done
+          echo "No changes detected in relevant folders."
