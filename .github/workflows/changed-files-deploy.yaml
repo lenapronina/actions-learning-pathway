@@ -44,21 +44,18 @@ jobs:
       - name: Check if files are in STYLES
         id: check-styles
         run: |
-          STYLES=$(echo ${{ env.STYLES }})
-          STYLES=${STYLES//[\[\]\",]/}
-          IFS=', ' read -r -a STYLES_ARRAY <<< "$STYLES"
+          STYLES=${{ toJson(env.STYLES) }}
+          IFS=', ' read -r -a STYLES_ARRAY <<< $(echo $STYLES | jq -r '.[]')
           matched_files=()
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            for style in "${STYLES_ARRAY[@]}"; do
-              if [[ "$file" == "$style" ]]; then
-                matched_files+=("$file")
-                break
-              fi
-            done
+          for file in "${STYLES_ARRAY[@]}"; do
+            if [[ " ${{ steps.changed-files.outputs.all_changed_files }} " =~ " $file " ]]; then
+              matched_files+=("$file")
+            fi
           done
-          echo "::set-output name=styles_matched::$(echo ${matched_files[@]})"
+          echo "::set-output name=styles_matched::${matched_files[*]}"
       - name: List filtered values
-        run: echo '${{ steps.check-styles.outputs.matrix }}'
+        run: echo '${{ steps.check-styles.outputs.styles_matched }}'
+        
   deploy:
     name: Run deploy job
     runs-on: ubuntu-latest
@@ -66,7 +63,6 @@ jobs:
     strategy:
       matrix: 
         files: ${{ fromJSON(needs.changed-files.outputs.styles_matched) }}
-        
       max-parallel: 4
       fail-fast: false
     steps:
