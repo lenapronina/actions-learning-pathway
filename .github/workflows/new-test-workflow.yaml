@@ -45,7 +45,7 @@ jobs:
       - name: Check for script changes
         run: |
           STYLES=${{ toJson(env.STYLES) }}
-          changed_folders=$(echo "${{ ${{ steps.changed-files.outputs.all_changed_files }} }}" | tr '\n' ' ')
+          changed_folders=$(echo "${{ steps.changed-files.outputs.all_changed_files }}" | tr '\n' ' ')
           for folder in $changed_folders; do
             if [[ "$folder" == *"/scripts"* ]]; then
               for style in ${STYLES[@]}; do
